@@ -1,0 +1,88 @@
+{
+  "countries": [
+    {
+      "code": "AR",
+      "flag": "🇦🇷",
+      "name": "Argentina",
+      "capital": "Buenos Aires",
+      "population": "45 milhões"
+    },
+    {
+      "code": "BO",
+      "flag": "🇧🇴",
+      "name": "Bolívia",
+      "capital": "Sucre (constitucional) / La Paz (sede do governo)",
+      "population": "12 milhões"
+    },
+    {
+      "code": "BR",
+      "flag": "🇧🇷",
+      "name": "Brasil",
+      "capital": "Brasília",
+      "population": "215 milhões"
+    },
+    {
+      "code": "CL",
+      "flag": "🇨🇱",
+      "name": "Chile",
+      "capital": "Santiago",
+      "population": "19 milhões"
+    },
+    {
+      "code": "CO",
+      "flag": "🇨🇴",
+      "name": "Colômbia",
+      "capital": "Bogotá",
+      "population": "51 milhões"
+    },
+    {
+      "code": "EC",
+      "flag": "🇪🇨",
+      "name": "Equador",
+      "capital": "Quito",
+      "population": "18 milhões"
+    },
+    {
+      "code": "GY",
+      "flag": "🇬🇾",
+      "name": "Guiana",
+      "capital": "Georgetown",
+      "population": "0.8 milhão"
+    },
+    {
+      "code": "PY",
+      "flag": "🇵🇾",
+      "name": "Paraguai",
+      "capital": "Assunção",
+      "population": "7 milhões"
+    },
+    {
+      "code": "PE",
+      "flag": "🇵🇪",
+      "name": "Peru",
+      "capital": "Lima",
+      "population": "34 milhões"
+    },
+    {
+      "code": "SR",
+      "flag": "🇸🇷",
+      "name": "Suriname",
+      "capital": "Paramaribo",
+      "population": "0.6 milhão"
+    },
+    {
+      "code": "UY",
+      "flag": "🇺🇾",
+      "name": "Uruguai",
+      "capital": "Montevidéu",
+      "population": "3.5 milhões"
+    },
+    {
+      "code": "VE",
+      "flag": "🇻🇪",
+      "name": "Venezuela",
+      "capital": "Caracas",
+      "population": "29 milhões"
+    }
+  ]
+}
