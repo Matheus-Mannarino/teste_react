@@ -1,78 +1,137 @@
 // src/App.jsx
-import { useState } from 'react';
+import React, { useState } from 'react';
+import Loading from './components/Loading';
+import ErrorMessage from './components/ErrorMessage';
 import './App.css';
-import AddCountryForm from './components/AddCountryForm';
-import CountryGrid from './components/CountryGrid';
-import Header from './components/Header';
 
 function App() {
-  const [countries, setCountries] = useState([
-    { id: 1, flag: "🇧🇷", name: "Brasil", capital: "Brasília", population: "215 milhões", language: "Português" },
-    { id: 2, flag: "🇦🇷", name: "Argentina", capital: "Buenos Aires", population: "45 milhões", language: "Espanhol" },
-    { id: 3, flag: "🇨🇱", name: "Chile", capital: "Santiago", population: "19 milhões", language: "Espanhol" },
-    { id: 4, flag: "🇺🇾", name: "Uruguai", capital: "Montevidéu", population: "3.5 milhões", language: "Espanhol" },
-    { id: 5, flag: "🇵🇪", name: "Peru", capital: "Lima", population: "33 milhões", language: "Espanhol" },
-    { id: 6, flag: "🇨🇴", name: "Colômbia", capital: "Bogotá", population: "51 milhões", language: "Espanhol" }
-  ]);
-  // Armazena os IDs dos países favoritos
-  const [favorites, setFavorites] = useState([]);
-  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  // Estados para gerenciar dados da API
+  const [paises, setPaises] = useState([]);
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState(null);
+  const [favoritos, setFavoritos] = useState([]);
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+  // Simulação de dados (será substituída por API real)
+  const dadosSimulados = [
+    {
+      name: { common: "Brasil" },
+      capital: ["Brasília"],
+      population: 215353593,
+      region: "Americas",
+      flag: "🇧🇷",
+      cca3: "BRA"
+    },
+    {
+      name: { common: "França" },
+      capital: ["Paris"],
+      population: 67391582,
+      region: "Europe",
+      flag: "🇫🇷",
+      cca3: "FRA"
+    }
+  ];
+
+  // Função que simula busca da API
+  const buscarPaises = async () => {
+    setCarregando(true);
+    setErro(null);
+
+    try {
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Simular possível erro (30% de chance)
+      if (Math.random() < 0.3) {
+        throw new Error('Erro de conexão com o servidor');
+      }
+
+      setPaises(dadosSimulados);
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const toggleFavorito = (paisCodigo) => {
+    setFavoritos(prev => 
+      prev.includes(paisCodigo)
+        ? prev.filter(codigo => codigo !== paisCodigo)
+        : [...prev, paisCodigo]
     );
   };
 
-  const favoriteCount = favorites.length;
-
-  const visibleCountries = showOnlyFavorites
-    ? countries.filter((c) => favorites.includes(c.id))
-    : countries;
-
-  const addCountry = (newCountry) => {
-    setCountries([...countries, newCountry]);
-  };
-
-  const toggleForm = () => {
-    setShowForm(!showForm);
-  };
+  // Carregar dados na inicialização (será substituído por useEffect)
+  React.useEffect(() => {
+    buscarPaises();
+  }, []);
 
   return (
     <div className="app">
-      <Header 
-        title="🌍 Lista de Países da América do Sul"
-        subtitle="Explore países sul-americanos e suas informações"
-        favoriteCount={favoriteCount}
-      />
+      <header className="app-header">
+        <h1>🌍 Lista de Países</h1>
+        <p>Dados obtidos via API REST Countries</p>
 
-      <div className="controls">
+        {paises.length > 0 && (
+          <div className="stats">
+            <span>📊 {paises.length} países</span>
+            <span>❤️ {favoritos.length} favoritos</span>
+          </div>
+        )}
+      </header>
+
+      <main className="main-content">
+        {carregando && <Loading />}
+
+        {erro && (
+          <ErrorMessage 
+            mensagem={erro} 
+            onTentar={buscarPaises}
+          />
+        )}
+
+        {!carregando && !erro && paises.length > 0 && (
+          <div className="countries-grid">
+            {paises.map(pais => (
+              <CountryCard 
+                key={pais.cca3}
+                pais={pais}
+                isFavorito={favoritos.includes(pais.cca3)}
+                onToggleFavorito={() => toggleFavorito(pais.cca3)}
+              />
+            ))}
+          </div>
+        )}
+
+        {!carregando && !erro && paises.length === 0 && (
+          <div className="empty-state">
+            <p>🌍 Nenhum país encontrado</p>
+            <button onClick={buscarPaises}>Carregar Países</button>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+// Componente CountryCard atualizado para dados de API
+function CountryCard({ pais, isFavorito, onToggleFavorito }) {
+  return (
+    <div className="country-card">
+      <div className="country-flag">{pais.flag}</div>
+      <div className="country-info">
+        <h2>{pais.name.common}</h2>
+        <p><strong>Capital:</strong> {pais.capital?.[0] || 'N/A'}</p>
+        <p><strong>População:</strong> {pais.population.toLocaleString()}</p>
+        <p><strong>Região:</strong> {pais.region}</p>
+
         <button 
-          className={`filter-btn ${showOnlyFavorites ? 'active' : ''}`}
-          onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+          className={`favorite-btn ${isFavorito ? 'favorited' : ''}`}
+          onClick={onToggleFavorito}
         >
-          {showOnlyFavorites ? 'Mostrar Todos' : 'Mostrar Favoritos'}
+          {isFavorito ? '❤️ Remover' : '🤍 Favoritar'}
         </button>
-
-         <button 
-          className="toggle-form-btn"
-          onClick={toggleForm}
-        >
-          {showForm ? 'Ocultar Formulário' : 'Adicionar País'}
-        </button>
-
       </div>
-
-      {showForm && (
-        <AddCountryForm onAddCountry={addCountry} />
-      )}
-
-      <CountryGrid 
-        countries={visibleCountries}
-        favorites={favorites}
-        onToggleFavorite={toggleFavorite}
-      />
     </div>
   );
 }
