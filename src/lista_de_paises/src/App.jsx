@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useState } from 'react';
 import './App.css';
+import AddCountryForm from './components/AddCountryForm';
 import CountryGrid from './components/CountryGrid';
 import Header from './components/Header';
 
@@ -16,6 +17,7 @@ function App() {
   // Armazena os IDs dos países favoritos
   const [favorites, setFavorites] = useState([]);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
@@ -28,6 +30,14 @@ function App() {
   const visibleCountries = showOnlyFavorites
     ? countries.filter((c) => favorites.includes(c.id))
     : countries;
+
+  const addCountry = (newCountry) => {
+    setCountries([...countries, newCountry]);
+  };
+
+  const toggleForm = () => {
+    setShowForm(!showForm);
+  };
 
   return (
     <div className="app">
@@ -44,7 +54,19 @@ function App() {
         >
           {showOnlyFavorites ? 'Mostrar Todos' : 'Mostrar Favoritos'}
         </button>
+
+         <button 
+          className="toggle-form-btn"
+          onClick={toggleForm}
+        >
+          {showForm ? 'Ocultar Formulário' : 'Adicionar País'}
+        </button>
+
       </div>
+
+      {showForm && (
+        <AddCountryForm onAddCountry={addCountry} />
+      )}
 
       <CountryGrid 
         countries={visibleCountries}
